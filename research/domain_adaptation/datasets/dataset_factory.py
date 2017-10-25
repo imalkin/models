@@ -22,7 +22,8 @@ from __future__ import print_function
 import tensorflow as tf
 
 from slim.datasets import mnist
-from domain_adaptation.datasets import mnist_m
+from domain_adaptation.datasets import mnist_m.p2,mturbo
+
 
 slim = tf.contrib.slim
 
@@ -48,13 +49,15 @@ def get_dataset(dataset_name,
   Raises:
     ValueError: if `dataset_name` isn't recognized.
   """
-  dataset_name_to_module = {'mnist': mnist, 'mnist_m': mnist_m}
+  dataset_name_to_module = {'mnist': mnist, 'mnist_m': mnist_m, 'p2': p2, 'mturbo': mturbo}
   if dataset_name not in dataset_name_to_module:
     raise ValueError('Name of dataset unknown %s.' % dataset_name)
 
-  return dataset_name_to_module[dataset_name].get_split(split_name, dataset_dir,
+  if dataset_name in ['mnist','mnist_m']:
+    return dataset_name_to_module[dataset_name].get_split(split_name, dataset_dir,
                                                         file_pattern, reader)
-
+  if dataset_name in ['p2','mturbo']:
+    return dataset_name_to_module[dataset_name].get_split(split_name, dataset_dir)
 
 def provide_batch(dataset_name, split_name, dataset_dir, num_readers,
                   batch_size, num_preprocessing_threads):
